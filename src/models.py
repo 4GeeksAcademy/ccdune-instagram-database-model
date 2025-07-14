@@ -1,19 +1,149 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import (
+    String, Column, Table, ForeignKey,
+)
+from sqlalchemy.orm import (
+    DeclarativeBase, Mapped,
+    mapped_column, relationship,
+)
 
-db = SQLAlchemy()
+class Base(DeclarativeBase):
+    """
+    This is magic that can be ignored
+    for now!  It's a special tool
+    that will help us later.
+    """
 
-class User(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
+
+db = SQLAlchemy(model_class=Base)
+
+class Follower(Base):
+    """
+    This is the new SQA 2.0 style:
+    """
+    __tablename__ = "follower"
+
+    user_from_id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    user_to_id: Mapped[str] = mapped_column(unique=True, nullable=False)
 
 
     def serialize(self):
         return {
-            "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
+            "user_from_id": self.user_from_id,
+            "user_to_id": self.user_to_id,
+        }
+
+    def __repr__(self):
+        return f"<Follower {self.user_from_id}>"
+    
+class User(Base):
+    __tablename__ = "user"
+
+    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    username: Mapped[str] = mapped_column(nullable=False)
+    firstname: Mapped[str] = mapped_column(nullable=False)
+    lastname: Mapped[str] = mapped_column(nullable=False)
+    email: Mapped[str] = mapped_column(unique=True, nullable=False)
+
+    def serialize(self):
+        return {
+            "ID": self.ID,
+            "username": self.username,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "email": self.email
+        }
+
+    def __repr__(self):
+        return f"<User {self.ID}>"
+    
+class Media(Base):
+    __tablename__ = "media"
+
+    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    type: Mapped[enumerate] = mapped_column(nullable=False)
+    url: Mapped[str] = mapped_column(nullable=False)
+    post_id: Mapped[str] = mapped_column(nullable=False)
+
+    def serialize(self):
+        return {
+            "ID": self.ID,
+            "type": self.type,
+            "url": self.url,
+            "lastname": self.lastname,
+            "post_id": self.post_id
+        }
+
+    def __repr__(self):
+        return f"<User {self.ID}>"
+
+
+
+#class Follower(db.Model):
+#    user_from_id: Mapped[int] = mapped_column(nullable=False)
+#    user_to_id: Mapped[str] = mapped_column(nullable=False)
+#
+ #   def serialize(self):
+ #       return {
+  #          "user_from_id": self.user_from_id,
+  #          "user_to_id": self.user_to_id,
+#
+  #      }
+
+
+class User(db.Model):
+    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    username: Mapped[str] = mapped_column(uniquekey=True, nullable=False)
+    firstname: Mapped[str] = mapped_column(nullable=False)
+    lastname: Mapped[str] = mapped_column(nullable=False)
+    email: Mapped[str] = mapped_column(uniquekey=True, nullable=False)
+
+    def serialize(self):
+        return {
+            "ID": self.ID,
+            "username": self.username,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "email": self.email
+        }
+
+
+class Media(db.Model):
+    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    type: Mapped[enumerate] = mapped_column(nullable=False)
+    url: Mapped[str] = mapped_column(nullable=False)
+    post_id: Mapped[str] = mapped_column(nullable=False)
+
+    def serialize(self):
+        return {
+            "ID": self.ID,
+            "type": self.type,
+            "url": self.url,
+            "post_id": self.post_id
+        }
+
+class Post(db.Model):
+    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    user_id: Mapped[enumerate] = mapped_column(nullable=False)
+    
+    def serialize(self):
+        return {
+            "ID": self.ID,
+            "user_id": self.user_id
+        }
+    
+class Comment(db.Model):
+    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    comment_text: Mapped[str] = mapped_column(nullable=False)
+    author_: Mapped[str] = mapped_column(nullable=False)
+    post_id: Mapped[str] = mapped_column(nullable=False)
+
+    def serialize(self):
+        return {
+            "ID": self.ID,
+            "type": self.type,
+            "url": self.url,
+            "post_id": self.post_id
         }
