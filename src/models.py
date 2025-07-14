@@ -78,72 +78,41 @@ class Media(Base):
 
     def __repr__(self):
         return f"<User {self.ID}>"
+    
 
+class Post(Base):
+    __tablename__ = "post"
 
-
-#class Follower(db.Model):
-#    user_from_id: Mapped[int] = mapped_column(nullable=False)
-#    user_to_id: Mapped[str] = mapped_column(nullable=False)
-#
- #   def serialize(self):
- #       return {
-  #          "user_from_id": self.user_from_id,
-  #          "user_to_id": self.user_to_id,
-#
-  #      }
-
-
-class User(db.Model):
-    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
-    username: Mapped[str] = mapped_column(uniquekey=True, nullable=False)
-    firstname: Mapped[str] = mapped_column(nullable=False)
-    lastname: Mapped[str] = mapped_column(nullable=False)
-    email: Mapped[str] = mapped_column(uniquekey=True, nullable=False)
-
-    def serialize(self):
-        return {
-            "ID": self.ID,
-            "username": self.username,
-            "firstname": self.firstname,
-            "lastname": self.lastname,
-            "email": self.email
-        }
-
-
-class Media(db.Model):
-    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
-    type: Mapped[enumerate] = mapped_column(nullable=False)
-    url: Mapped[str] = mapped_column(nullable=False)
-    post_id: Mapped[str] = mapped_column(nullable=False)
-
-    def serialize(self):
-        return {
-            "ID": self.ID,
-            "type": self.type,
-            "url": self.url,
-            "post_id": self.post_id
-        }
-
-class Post(db.Model):
     ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     user_id: Mapped[enumerate] = mapped_column(nullable=False)
-    
+
     def serialize(self):
         return {
             "ID": self.ID,
             "user_id": self.user_id
         }
-    
-class Comment(db.Model):
+
+    def __repr__(self):
+        return f"<User {self.ID}>"
+
+
+
+class Comment(Base):
+    __tablename__ = "comment"
+
     ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     comment_text: Mapped[str] = mapped_column(nullable=False)
-    author_: Mapped[str] = mapped_column(nullable=False)
+    author_id: Mapped[str] = mapped_column(nullable=False)
     post_id: Mapped[str] = mapped_column(nullable=False)
 
     def serialize(self):
         return {
             "ID": self.ID,
-            "type": self.type,
-            "url": self.url,
+            "comment_text": self.comment_text,
+            "author_id": self.author_id,
+            "lastname": self.lastname,
             "post_id": self.post_id
         }
+
+    def __repr__(self):
+        return f"<User {self.ID}>"
