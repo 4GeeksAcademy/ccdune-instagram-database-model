@@ -66,26 +66,25 @@ class Media(Base):
     ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     type: Mapped[enumerate] = mapped_column(nullable=False)
     url: Mapped[str] = mapped_column(nullable=False)
-    post_id: Mapped[str] = mapped_column(ForeignKey("post_id"), nullable=False)
+    post_id: Mapped[str] = mapped_column(ForeignKey("post.ID"), nullable=False)
 
     def serialize(self):
         return {
             "ID": self.ID,
             "type": self.type,
             "url": self.url,
-            "lastname": self.lastname,
             "post_id": self.post_id
         }
 
     def __repr__(self):
-        return f"<User {self.ID}>"
+        return f"<Media {self.ID}>"
 
 
 class Post(Base):
     __tablename__ = "post"
 
     ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
-    user_id: Mapped[enumerate] = mapped_column(nullable=False)
+    user_id: Mapped[int] = mapped_column(nullable=False)
 
     def serialize(self):
         return {
@@ -94,7 +93,7 @@ class Post(Base):
         }
 
     def __repr__(self):
-        return f"<User {self.ID}>"
+        return f"<Post {self.ID}>"
 
 
 class Comment(Base):
@@ -110,9 +109,8 @@ class Comment(Base):
             "ID": self.ID,
             "comment_text": self.comment_text,
             "author_id": self.author_id,
-            "lastname": self.lastname,
             "post_id": self.post_id
         }
 
     def __repr__(self):
-        return f"<User {self.ID}>"
+        return f"<Comment {self.ID}>"
