@@ -1,6 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean
-from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import (
     String, Column, Table, ForeignKey,
 )
@@ -8,6 +6,7 @@ from sqlalchemy.orm import (
     DeclarativeBase, Mapped,
     mapped_column, relationship,
 )
+
 
 class Base(DeclarativeBase):
     """
@@ -19,6 +18,7 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
+
 class Follower(Base):
     """
     This is the new SQA 2.0 style:
@@ -28,7 +28,6 @@ class Follower(Base):
     user_from_id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     user_to_id: Mapped[str] = mapped_column(unique=True, nullable=False)
 
-
     def serialize(self):
         return {
             "user_from_id": self.user_from_id,
@@ -37,7 +36,8 @@ class Follower(Base):
 
     def __repr__(self):
         return f"<Follower {self.user_from_id}>"
-    
+
+
 class User(Base):
     __tablename__ = "user"
 
@@ -58,14 +58,15 @@ class User(Base):
 
     def __repr__(self):
         return f"<User {self.ID}>"
-    
+
+
 class Media(Base):
     __tablename__ = "media"
 
     ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     type: Mapped[enumerate] = mapped_column(nullable=False)
     url: Mapped[str] = mapped_column(nullable=False)
-    post_id: Mapped[str] = mapped_column(nullable=False)
+    post_id: Mapped[str] = mapped_column(ForeignKey("post_id") nullable=False)
 
     def serialize(self):
         return {
@@ -78,7 +79,7 @@ class Media(Base):
 
     def __repr__(self):
         return f"<User {self.ID}>"
-    
+
 
 class Post(Base):
     __tablename__ = "post"
@@ -94,7 +95,6 @@ class Post(Base):
 
     def __repr__(self):
         return f"<User {self.ID}>"
-
 
 
 class Comment(Base):
