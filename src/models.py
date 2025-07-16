@@ -19,25 +19,6 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 
-class Follower(Base):
-    """
-    This is the new SQA 2.0 style:
-    """
-    __tablename__ = "follower"
-
-    user_from_id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
-    user_to_id: Mapped[str] = mapped_column(unique=True, nullable=False)
-
-    def serialize(self):
-        return {
-            "user_from_id": self.user_from_id,
-            "user_to_id": self.user_to_id,
-        }
-
-    def __repr__(self):
-        return f"<Follower {self.user_from_id}>"
-
-
 class User(Base):
     __tablename__ = "user"
 
@@ -60,13 +41,32 @@ class User(Base):
         return f"<User {self.ID}>"
 
 
+class Follower(Base):
+    """
+    This is the new SQA 2.0 style:
+    """
+    __tablename__ = "follower"
+
+    user_from_id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    user_to_id: Mapped[str] = mapped_column(unique=True, nullable=False)
+
+    def serialize(self):
+        return {
+            "user_from_id": self.user_from_id,
+            "user_to_id": self.user_to_id,
+        }
+
+    def __repr__(self):
+        return f"<Follower {self.user_from_id}>"
+
+
 class Media(Base):
     __tablename__ = "media"
 
     ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     type: Mapped[enumerate] = mapped_column(nullable=False)
     url: Mapped[str] = mapped_column(nullable=False)
-    post_id: Mapped[str] = mapped_column(ForeignKey("post_id") nullable=False)
+    post_id: Mapped[str] = mapped_column(ForeignKey("post_id"), nullable=False)
 
     def serialize(self):
         return {
