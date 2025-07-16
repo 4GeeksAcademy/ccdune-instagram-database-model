@@ -15,15 +15,18 @@ class UserView(ModelView):
         'ID', 'username', 'firstname', 'lastname', 'email'
     ]
 
+
 class MediaView(ModelView):
     column_list = [
         'ID', 'type', 'url', 'post_id'
     ]
 
+
 class PostView(ModelView):
     column_list = [
         'ID', 'user_ID'
     ]
+
 
 class CommentView(ModelView):
     column_list = [
@@ -37,8 +40,8 @@ def setup_admin(app):
     admin = Admin(app, name='4Geeks Admin', template_mode='bootstrap3')
 
     # Add your models here, for example this is how we add a the User model to the admin
-    admin.add_view(FollowerView(Follower, db.session))
     admin.add_view(UserView(User, db.session))
+    admin.add_view(FollowerView(Follower, db.session))
     admin.add_view(MediaView(Media, db.session))
     admin.add_view(PostView(Post, db.session))
     admin.add_view(CommentView(Comment, db.session))

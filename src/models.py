@@ -23,7 +23,7 @@ class User(Base):
     __tablename__ = "user"
 
     ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
-    username: Mapped[str] = mapped_column(nullable=False)
+    username: Mapped[str] = mapped_column(unique=True, nullable=False)
     firstname: Mapped[str] = mapped_column(nullable=False)
     lastname: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
@@ -34,7 +34,7 @@ class User(Base):
             "username": self.username,
             "firstname": self.firstname,
             "lastname": self.lastname,
-            "email": self.email
+            "email": self.email,
         }
 
     def __repr__(self):
@@ -70,10 +70,10 @@ class Media(Base):
 
     def serialize(self):
         return {
-            "ID": self.ID,
-            "type": self.type,
-            "url": self.url,
-            "post_id": self.post_id
+           "ID": self.ID,
+           "type": self.type,
+           "url": self.url,
+           "post_id": self.post_id,
         }
 
     def __repr__(self):
@@ -109,7 +109,7 @@ class Comment(Base):
             "ID": self.ID,
             "comment_text": self.comment_text,
             "author_id": self.author_id,
-            "post_id": self.post_id
+            "post_id": self.post_id,
         }
 
     def __repr__(self):
