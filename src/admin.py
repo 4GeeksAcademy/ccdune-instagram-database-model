@@ -23,9 +23,8 @@ class MediaView(ModelView):
 
 
 class PostView(ModelView):
-    column_list = [
-        'ID', 'user_ID'
-    ]
+    column_list = ['ID', 'user_id']
+
 
 
 class CommentView(ModelView):

@@ -27,6 +27,17 @@ class User(Base):
     firstname: Mapped[str] = mapped_column(nullable=False)
     lastname: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
+    posts = relationship("Post", back_populates="user", cascade="all, delete-orphan")
+    followers = relationship("Follower",
+                             foreign_keys="[Follower.user_to_id]",
+                             backref="followed",
+                             cascade="all, delete-orphan")
+    following = relationship("Follower",
+                             foreign_keys="[Follower.user_from_id]",
+                             backref="follower",
+                             cascade="all, delete-orphan")      
+    
+
 
     def serialize(self):
         return {
@@ -47,6 +58,7 @@ class Follower(Base):
     """
     __tablename__ = "follower"
 
+    id: Mapped[int] = mapped_column(primary_key=True)
     user_from_id: Mapped[int] = mapped_column(ForeignKey("user.ID"), nullable=False)
     user_to_id: Mapped[int] = mapped_column(ForeignKey("user.ID"), nullable=False)
 
@@ -70,6 +82,8 @@ class Media(Base):
     type: Mapped[str] = mapped_column(nullable=False)
     url: Mapped[str] = mapped_column(nullable=False)
     post_id: Mapped[int] = mapped_column(ForeignKey("post.ID"), nullable=False)
+    post = relationship("Post", backref="media")
+    
 
     def serialize(self):
         return {
@@ -88,6 +102,9 @@ class Post(Base):
 
     ID: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.ID"), nullable=False)
+    user = relationship("User", back_populates="posts")
+    media = relationship("Media", backref="post", cascade="all, delete-orphan")
+    comments = relationship("Comment", backref="post", cascade="all, delete-orphan")        
 
     def serialize(self):
         return {
@@ -106,6 +123,10 @@ class Comment(Base):
     comment_text: Mapped[str] = mapped_column(nullable=False)
     author_id: Mapped[int] = mapped_column(ForeignKey("user.ID"), nullable=False)
     post_id: Mapped[int] = mapped_column(ForeignKey("post.ID"), nullable=False)
+
+    author = relationship("User", backref="comments")
+    post = relationship("Post", backref="comments")
+
 
     def serialize(self):
         return {
