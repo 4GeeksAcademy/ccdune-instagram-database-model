@@ -22,7 +22,7 @@ db = SQLAlchemy(model_class=Base)
 class User(Base):
     __tablename__ = "user"
 
-    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    ID: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(unique=True, nullable=False)
     firstname: Mapped[str] = mapped_column(nullable=False)
     lastname: Mapped[str] = mapped_column(nullable=False)
@@ -38,7 +38,7 @@ class User(Base):
         }
 
     def __repr__(self):
-        return f"<User {self.ID}>"
+        return f"<User {self.username}>"
 
 
 class Follower(Base):
@@ -47,8 +47,11 @@ class Follower(Base):
     """
     __tablename__ = "follower"
 
-    user_from_id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
-    user_to_id: Mapped[str] = mapped_column(unique=True, nullable=False)
+    user_from_id: Mapped[int] = mapped_column(ForeignKey("user.ID"), nullable=False)
+    user_to_id: Mapped[int] = mapped_column(ForeignKey("user.ID"), nullable=False)
+
+    follower = relationship("User", foreign_keys=[user_from_id])
+    followed = relationship("User", foreign_keys=[user_to_id])
 
     def serialize(self):
         return {
@@ -64,9 +67,9 @@ class Media(Base):
     __tablename__ = "media"
 
     ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
-    type: Mapped[enumerate] = mapped_column(nullable=False)
+    type: Mapped[str] = mapped_column(nullable=False)
     url: Mapped[str] = mapped_column(nullable=False)
-    post_id: Mapped[str] = mapped_column(ForeignKey("post.ID"), nullable=False)
+    post_id: Mapped[int] = mapped_column(ForeignKey("post.ID"), nullable=False)
 
     def serialize(self):
         return {
@@ -83,8 +86,8 @@ class Media(Base):
 class Post(Base):
     __tablename__ = "post"
 
-    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
-    user_id: Mapped[int] = mapped_column(nullable=False)
+    ID: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.ID"), nullable=False)
 
     def serialize(self):
         return {
@@ -99,10 +102,10 @@ class Post(Base):
 class Comment(Base):
     __tablename__ = "comment"
 
-    ID: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    ID: Mapped[int] = mapped_column(primary_key=True)
     comment_text: Mapped[str] = mapped_column(nullable=False)
-    author_id: Mapped[str] = mapped_column(nullable=False)
-    post_id: Mapped[str] = mapped_column(nullable=False)
+    author_id: Mapped[int] = mapped_column(ForeignKey("user.ID"), nullable=False)
+    post_id: Mapped[int] = mapped_column(ForeignKey("post.ID"), nullable=False)
 
     def serialize(self):
         return {
